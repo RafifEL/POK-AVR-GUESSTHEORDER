@@ -28,11 +28,27 @@
 .equ ARRAY = $60	;Starting Array
 .equ LAST_LED = 0b10000000
 
+.org $00
+rjmp MAIN
+.org $01
+rjmp ext_int0
+
+
+MAIN:
+
 INIT_STACK:
 	ldi temp, low(RAMEND)
 	out SPL, temp
 	ldi temp, high(RAMEND)
 	out SPH, temp
+
+
+INIT_INTERRUPT:
+	ldi temp,0b00000010
+	out MCUCR,temp
+	ldi temp,0b01000000
+	out GICR,temp
+	sei
 
 INIT_LED:
 	ser temp ; load $FF to temp
@@ -114,6 +130,19 @@ GUESS_INPUT:
 	subi temp1, 1
 	rjmp GUESS_INPUT
 
+ext_int0:
+	ldi temp1, 0
+	ldi temp2, 0
+	ldi temp4, 0
+	ldi temp5, 0
+	ldi temp6, 0
+	mov value1, temp1
+	mov value2, temp1
+	pop key
+	pop key
+	ldi key, 0
+	nop
+	rjmp	0x00
 
 
 FOREVER:
@@ -124,7 +153,6 @@ INPUT_SWITCH:
 	cpi key, 8
 	brge INPUT_SWITCH
 	ret
-
 
 KEYPAD:
 	.include "init_keypad.asm"

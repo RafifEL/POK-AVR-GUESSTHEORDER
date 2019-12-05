@@ -45,6 +45,47 @@
             </RS_Pin>
          </PortMapping>
       </LCD>
+      <Buttons>
+         <Name>Buttons1</Name>
+         <Position>
+            <top>104</top>
+            <left>104</left>
+         </Position>
+         <Config index="0">
+            <Name>Reset</Name>
+            <PortPin>
+               <Port>PORTD</Port>
+               <Bit>2</Bit>
+            </PortPin>
+            <Invert>0</Invert>
+         </Config>
+         <Config index="1">
+            <Name>Button1</Name>
+            <PortPin>
+               <Port>PORTD</Port>
+               <Bit>3</Bit>
+            </PortPin>
+            <Invert>0</Invert>
+         </Config>
+         <Config index="2">
+            <Name>Button2</Name>
+            <PortPin>
+               <Port>PORTD</Port>
+               <Bit>4</Bit>
+            </PortPin>
+            <Invert>0</Invert>
+         </Config>
+         <Config index="3">
+            <Name>Button3</Name>
+            <PortPin>
+               <Port>PORTD</Port>
+               <Bit>7</Bit>
+            </PortPin>
+            <Invert>0</Invert>
+         </Config>
+         <TrinaryGroupEnable index="0">0</TrinaryGroupEnable>
+         <TrinaryGroupEnable index="1">0</TrinaryGroupEnable>
+      </Buttons>
       <LEDs>
          <Name>LEDs1</Name>
          <Position>
