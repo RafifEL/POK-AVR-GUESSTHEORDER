@@ -26,30 +26,30 @@
          </DisplayConfig>
          <PortMapping>
             <DataPort>
-               <Port></Port>
+               <Port>PORTB</Port>
                <HighNibble>bit 4..7</HighNibble>
                <LowNibble>N.C.</LowNibble>
             </DataPort>
             <EnablePin>
-               <Port></Port>
-               <Bit>1</Bit>
+               <Port>PORTA</Port>
+               <Bit>0</Bit>
             </EnablePin>
             <RW_Pin>
                <WriteOnly>0</WriteOnly>
-               <Port></Port>
-               <Bit>0</Bit>
+               <Port>PORTA</Port>
+               <Bit>2</Bit>
             </RW_Pin>
             <RS_Pin>
-               <Port></Port>
-               <Bit>6</Bit>
+               <Port>PORTA</Port>
+               <Bit>1</Bit>
             </RS_Pin>
          </PortMapping>
       </LCD>
       <Buttons>
          <Name>Buttons1</Name>
          <Position>
-            <top>104</top>
-            <left>104</left>
+            <top>273</top>
+            <left>160</left>
          </Position>
          <Config index="0">
             <Name>Reset</Name>
