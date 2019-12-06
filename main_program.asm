@@ -42,6 +42,9 @@ INIT_STACK:
 	ldi temp, high(RAMEND)
 	out SPH, temp
 
+INIT_LCD_CALL:
+	.include "init_lcd.asm"
+
 
 INIT_INTERRUPT:
 	ldi temp,0b00000010
@@ -57,6 +60,8 @@ INIT_LED:
 	out PORTE, temp
 
 
+Test_aja:
+	.include "lcd_output.asm"
 
 ;LOOP Pertama Minta Urutan Angka (Zero Indexing)
 ldi temp1, 8
