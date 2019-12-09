@@ -13,4 +13,4 @@ MOVE_BOTTOM_LCD:
 	sbi PORTA,0 ; SETB EN
 	cbi PORTA,0 ; CLR EN
 	rcall DELAY_01
-	rjmp PROGRAM_EX
+	ret
