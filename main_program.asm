@@ -57,6 +57,11 @@ INIT_LED:
 INIT_Z_POINTER_USER_INPUT:
 	ldi ZH,high(2*input_user_message) ; Load high part of byte address into ZH
 	ldi ZL,low(2*input_user_message) ; Load low part of byte address into ZL
+	rjmp ASK_USER_INPUT
+
+GET_SPACE:
+	ldi temp, 32
+	ret
 
 ASK_USER_INPUT:
 	lpm
@@ -70,21 +75,29 @@ ASK_USER_INPUT:
 	adiw ZL,1 ; Increase Z registers
 	rjmp ASK_USER_INPUT
 
+
 ;LOOP Pertama Minta Urutan Angka (Zero Indexing)
-ldi temp1, 8
-rcall INIT_LOOP
+PROGRAM_EX:
+	ldi temp1, 8
+	rcall INIT_LOOP
+
 LOOP1_INPUT:
 	tst temp1
 	breq ASK_MUCH_SWITCH
 
 	rcall KEYPAD
-	
+
+	mov temp, key 	; Put number in decimal to temp
+	SUBI temp, -48	; converting temp to ascii
+	rcall WRITE_TEXT
+
+	rcall GET_SPACE
+	rcall WRITE_TEXT
 	
 	st Y+, key
 
 	subi temp1, 1
 	rjmp LOOP1_INPUT
-
 
 ASK_MUCH_SWITCH:
 	rcall KEYPAD
