@@ -1,4 +1,7 @@
 INIT_LCD_MAIN:
+	rcall INIT_LCD
+	rcall CLEAR_LCD
+	rjmp END_LCD_INIT
 
 INIT_LCD:
 	cbi PORTA,1 ; CLR RS
@@ -20,6 +23,7 @@ INIT_LCD:
 	sbi PORTA,0 ; SETB EN
 	cbi PORTA,0 ; CLR EN
 	rcall DELAY_01
+	ret
 
 CLEAR_LCD:
 	cbi PORTA,1 ; CLR RS
@@ -28,6 +32,7 @@ CLEAR_LCD:
 	sbi PORTA,0 ; SETB EN
 	cbi PORTA,0 ; CLR EN
 	rcall DELAY_01
+	ret
 
 END_LCD_INIT:
 	ser temp

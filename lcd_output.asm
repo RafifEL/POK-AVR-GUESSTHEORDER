@@ -12,5 +12,5 @@ MOVE_BOTTOM_LCD:
 	out PORTB,temp
 	sbi PORTA,0 ; SETB EN
 	cbi PORTA,0 ; CLR EN
-	rcall DELAY_01
-	ret
+	rcall DELAY_01
+	ret

@@ -57,34 +57,81 @@ INIT_LED:
 INIT_Z_POINTER_USER_INPUT:
 	ldi ZH,high(2*input_user_message) ; Load high part of byte address into ZH
 	ldi ZL,low(2*input_user_message) ; Load low part of byte address into ZL
+	rjmp ASK_USER_INPUT_PROMPT
 
-ASK_USER_INPUT:
+INIT_Z_POINTER_MUCH_SWITCH:
+	ldi ZH,high(2*input_user_random_message) ; Load high part of byte address into ZH
+	ldi ZL,low(2*input_user_random_message) ; Load low part of byte address into ZL
+	ret
+
+INIT_Z_POINTER_START_GUESS:
+	ldi ZH,high(2*good_luck_prompt) ; Load high part of byte address into ZH
+	ldi ZL,low(2*good_luck_prompt) ; Load low part of byte address into ZL
+	ret
+
+GET_SPACE:
+	ldi temp, 32
+	ret
+
+ASK_USER_INPUT_PROMPT:
 	lpm
 	
 	tst r0;
-	breq MOVE_BOTTOM_LCD
+	breq NEW_LINE_USER_INPUT
 
 	mov temp, r0 ; Put the character into Port B
 	rcall WRITE_TEXT
 
 	adiw ZL,1 ; Increase Z registers
-	rjmp ASK_USER_INPUT
+	rjmp ASK_USER_INPUT_PROMPT
+
+NEW_LINE_USER_INPUT:
+	rcall MOVE_BOTTOM_LCD
+	rjmp PROGRAM_EX
 
 ;LOOP Pertama Minta Urutan Angka (Zero Indexing)
-ldi temp1, 8
-rcall INIT_LOOP
+PROGRAM_EX:
+	ldi temp1, 8
+	rcall INIT_LOOP
+
 LOOP1_INPUT:
 	tst temp1
-	breq ASK_MUCH_SWITCH
+	breq ASK_MUCH_SWITCH_PROMPT
 
 	rcall KEYPAD
-	
+
+	mov temp, key 	; Put number in decimal to temp
+	SUBI temp, -48	; converting temp to ascii
+	rcall WRITE_TEXT
+
+	rcall GET_SPACE
+	rcall WRITE_TEXT
 	
 	st Y+, key
 
 	subi temp1, 1
 	rjmp LOOP1_INPUT
 
+ASK_MUCH_SWITCH_PROMPT:
+	rcall CLEAR_LCD
+	rcall INIT_Z_POINTER_MUCH_SWITCH
+	rjmp ASK_MUCH_SWITCH_PROMPT_LCD
+
+ASK_MUCH_SWITCH_PROMPT_LCD:
+	lpm
+	
+	tst r0;
+	breq NEW_LINE_MUCH_SWITCH
+
+	mov temp, r0 ; Put the character into Port B
+	rcall WRITE_TEXT
+
+	adiw ZL,1
+	rjmp ASK_MUCH_SWITCH_PROMPT_LCD
+
+NEW_LINE_MUCH_SWITCH:
+	rcall MOVE_BOTTOM_LCD
+	rjmp ASK_MUCH_SWITCH
 
 ASK_MUCH_SWITCH:
 	rcall KEYPAD
@@ -94,26 +141,40 @@ ASK_MUCH_SWITCH:
 	breq ASK_MUCH_SWITCH
 
 	mov temp1, key
-	
+	mov temp, key
+	subi temp, -48 	;Convert to Ascii
+	rcall WRITE_TEXT 
 
 SWITCH_PLACE:
 	tst temp1
-	breq START_GUESS	
-
+	breq START_GUESS_PROMPT	
+	
+	rcall CLEAR_LCD
 	rcall INIT_LOOP
 	;First Number
 	rcall INPUT_SWITCH
+	;Write on LCD
+	mov temp, key
+	subi temp, -48
+	rcall WRITE_TEXT
+	
+	rcall GET_SPACE
+	rcall WRITE_TEXT
 	;mov temp6, key
 	;rcall INC_YPOINTER
 	add YL, key
 	ld value1, Y
-
-
-	
 	
 	rcall SECONDARY_POINTER
 	;Second Number
 	rcall INPUT_SWITCH
+	;Write on LCD
+	mov temp, key
+	subi temp, -48
+	rcall WRITE_TEXT
+	
+	rcall GET_SPACE
+	rcall WRITE_TEXT
 	;mov temp6, key
 	;rcall INC_XPOINTER
 	add XL, key
@@ -126,6 +187,27 @@ SWITCH_PLACE:
 	subi temp1, 1
 	rjmp SWITCH_PLACE
 
+START_GUESS_PROMPT:
+	rcall CLEAR_LCD
+	rcall INIT_Z_POINTER_START_GUESS
+	rjmp START_GUESS_PROMPT_LCD
+
+START_GUESS_PROMPT_LCD:
+	lpm
+	
+	tst r0;
+	breq GUESS_PROMPT
+
+	mov temp, r0 ; Put the character into Port B
+	rcall WRITE_TEXT
+
+	adiw ZL,1 ; Increase Z registers
+	rjmp START_GUESS_PROMPT_LCD
+
+GUESS_PROMPT:
+	rcall CLEAR_LCD
+	rjmp START_GUESS
+
 START_GUESS:
 	ldi temp1, 8
 	rcall INIT_LOOP
@@ -135,10 +217,17 @@ GUESS_INPUT:
 
 	rcall KEYPAD
 	
+	mov temp, key
+	subi temp, -48
+	rcall WRITE_TEXT
+	
+	rcall GET_SPACE
+	rcall WRITE_TEXT
+
 	ld value1, Y+
 	rcall CHECK_GUESS
 
-
+	
 	subi temp1, 1
 	rjmp GUESS_INPUT
 
@@ -191,3 +280,7 @@ KeyTable: ;dari kiri
 
 input_user_message:
 	.db "Masukkan Angka",0
+input_user_random_message:
+	.db "Jumlah Pengacakan", 0
+good_luck_prompt:
+	.db "Good Luck!", 0
