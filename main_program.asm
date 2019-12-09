@@ -14,11 +14,6 @@
 .def value1 = r9
 .def value2 = r10
 
-
-.
-
-
-
 ;PORT A For LCD EN, RS, RW
 ;PORT B For LCD output
 ;PORT C For KeyPad
@@ -33,6 +28,7 @@ rjmp MAIN
 .org $01
 rjmp ext_int0
 
+.include "lcd_output.asm"
 
 MAIN:
 
@@ -44,7 +40,6 @@ INIT_STACK:
 
 INIT_LCD_CALL:
 	.include "init_lcd.asm"
-
 
 INIT_INTERRUPT:
 	ldi temp,0b00000010
@@ -59,9 +54,21 @@ INIT_LED:
 	ldi temp, 0x00
 	out PORTE, temp
 
+INIT_Z_POINTER_USER_INPUT:
+	ldi ZH,high(2*input_user_message) ; Load high part of byte address into ZH
+	ldi ZL,low(2*input_user_message) ; Load low part of byte address into ZL
 
-Test_aja:
-	.include "lcd_output.asm"
+ASK_USER_INPUT:
+	lpm
+	
+	tst r0;
+	breq MOVE_BOTTOM_LCD
+
+	mov temp, r0 ; Put the character into Port B
+	rcall WRITE_TEXT
+
+	adiw ZL,1 ; Increase Z registers
+	rjmp ASK_USER_INPUT
 
 ;LOOP Pertama Minta Urutan Angka (Zero Indexing)
 ldi temp1, 8
@@ -181,3 +188,6 @@ KeyTable: ;dari kiri
 	.DB 0x03, 0x06, 0x09, 0xF0 ; kolom ke tiga
 	.DB 0x02, 0x05, 0x08, 0x00 ; kolom ke dua
 	.DB 0x01, 0x04, 0x07, 0xF0 ; kolom pertama
+
+input_user_message:
+	.db "Masukkan Angka",0

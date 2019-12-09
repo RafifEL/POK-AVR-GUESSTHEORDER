@@ -3,12 +3,12 @@
    <General>
       <Build>2005</Build>
       <Position>
-         <top>83</top>
-         <bottom>648</bottom>
-         <left>661</left>
-         <right>1243</right>
+         <top>78</top>
+         <bottom>595</bottom>
+         <left>720</left>
+         <right>1403</right>
       </Position>
-      <StayOnTop>0</StayOnTop>
+      <StayOnTop>1</StayOnTop>
       <Target>ATmega8515</Target>
    </General>
    <Views>
@@ -19,7 +19,7 @@
             <left>0</left>
          </Position>
          <DisplayConfig>
-            <columns>16</columns>
+            <columns>32</columns>
             <rows>2</rows>
             <bkColor>0xc1fa9d</bkColor>
             <size>2</size>

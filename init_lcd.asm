@@ -1,14 +1,4 @@
 INIT_LCD_MAIN:
-	rcall INIT_LCD
-
-	ser temp
-	out DDRA,temp ; Set port A as output
-	out DDRB,temp ; Set port B as output
-
-	rcall WRITE_TEXT
-
-END_LCD:
-	ret
 
 INIT_LCD:
 	cbi PORTA,1 ; CLR RS
@@ -30,7 +20,6 @@ INIT_LCD:
 	sbi PORTA,0 ; SETB EN
 	cbi PORTA,0 ; CLR EN
 	rcall DELAY_01
-	ret
 
 CLEAR_LCD:
 	cbi PORTA,1 ; CLR RS
@@ -39,4 +28,8 @@ CLEAR_LCD:
 	sbi PORTA,0 ; SETB EN
 	cbi PORTA,0 ; CLR EN
 	rcall DELAY_01
-	ret
+
+END_LCD_INIT:
+	ser temp
+	out DDRA,temp ; Set port A as output
+	out DDRB,temp ; Set port B as output
