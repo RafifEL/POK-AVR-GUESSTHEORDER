@@ -14,3 +14,12 @@ MOVE_BOTTOM_LCD:
 	cbi PORTA,0 ; CLR EN
 	rcall DELAY_01
 	ret
+
+MOVE_LCD:
+	cbi PORTA,1 ; CLR RS
+	out PORTB,temp
+	sbi PORTA,0 ; SETB EN
+	cbi PORTA,0 ; CLR EN
+	rcall DELAY_01
+
+	ret

@@ -4,6 +4,7 @@ CP_KEY_VALUE:
 	ret
 
 LED_OUTPUT:
+	subi result, -1
 	cpi temp1, 8
 	breq FIRST
 	cpi temp1, 7
