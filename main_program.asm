@@ -11,6 +11,9 @@
 
 .def key = r18 ; KeyPad Output
 
+.def temp3 = r23
+.def result = r24
+
 .def value1 = r9
 .def value2 = r10
 
@@ -27,8 +30,6 @@
 rjmp MAIN
 .org $01
 rjmp ext_int0
-
-.include "lcd_output.asm"
 
 MAIN:
 
@@ -50,7 +51,9 @@ INIT_INTERRUPT:
 
 INIT_LED:
 	ser temp ; load $FF to temp
-	out DDRE,temp ; Set PORTA to output
+	out DDRE,temp ; Set PORTE to output
+	ldi temp, 0x01
+	out PORTE, temp
 	ldi temp, 0x00
 	out PORTE, temp
 
@@ -67,6 +70,11 @@ INIT_Z_POINTER_MUCH_SWITCH:
 INIT_Z_POINTER_START_GUESS:
 	ldi ZH,high(2*good_luck_prompt) ; Load high part of byte address into ZH
 	ldi ZL,low(2*good_luck_prompt) ; Load low part of byte address into ZL
+	ret
+
+INIT_Z_POINTER_FINISH_PROMPT:
+	ldi ZH,high(2*finish_prompt) ; Load high part of byte address into ZH
+	ldi ZL,low(2*finish_prompt) ; Load low part of byte address into ZL
 	ret
 
 GET_SPACE:
@@ -89,8 +97,13 @@ NEW_LINE_USER_INPUT:
 	rcall MOVE_BOTTOM_LCD
 	rjmp PROGRAM_EX
 
+NEW_LINE:
+	rcall MOVE_BOTTOM_LCD
+	ret
+
 ;LOOP Pertama Minta Urutan Angka (Zero Indexing)
 PROGRAM_EX:
+	ldi result, 0
 	ldi temp1, 8
 	rcall INIT_LOOP
 
@@ -101,7 +114,7 @@ LOOP1_INPUT:
 	rcall KEYPAD
 
 	mov temp, key 	; Put number in decimal to temp
-	SUBI temp, -48	; converting temp to ascii
+	subi temp, -48	; converting temp to ascii
 	rcall WRITE_TEXT
 
 	rcall GET_SPACE
@@ -213,7 +226,7 @@ START_GUESS:
 	rcall INIT_LOOP
 GUESS_INPUT:
 	tst temp1
-	breq FOREVER
+	breq RESULT_PROMPT
 
 	rcall KEYPAD
 	
@@ -230,6 +243,51 @@ GUESS_INPUT:
 	
 	subi temp1, 1
 	rjmp GUESS_INPUT
+
+RESULT_PROMPT:
+	rcall CLEAR_LCD
+	rcall INIT_Z_POINTER_FINISH_PROMPT
+	ldi temp3, 2
+	rjmp RESULT_PROMPT_LCD
+
+RESULT_PROMPT_LCD:
+	lpm
+	
+	adiw ZL,1 ; Increase Z registers
+	
+	mov temp,r0
+	tst temp
+	breq RESULT_PROMPT_CHECKER ; if get 0 from database, increase 0 counter
+ 
+ 	rcall WRITE_TEXT
+	
+	rjmp RESULT_PROMPT_LCD
+
+
+RESULT_PROMPT_CHECKER:
+	subi temp3, 1
+	rcall NEW_LINE
+	tst temp3
+	breq SHOW_RESULT
+
+	rjmp RESULT_PROMPT_LCD
+
+SHOW_RESULT:
+	ldi temp,0b11001110 ; MOV DATA,0x01
+	rcall MOVE_LCD
+
+	rcall GET_SPACE
+	rcall WRITE_TEXT
+
+	mov temp, result
+
+	subi temp, -48
+	rcall WRITE_TEXT
+
+	rjmp forever
+
+	
+
 
 ext_int0:
 	ldi temp1, 0
@@ -269,6 +327,8 @@ SECONDARY_POINTER:
 	ldi XL, low(ARRAY)
 	ret
 
+.include "lcd_output.asm"
+
 CHECK_GUESS:
 	.include "led_output.asm"
 	
@@ -284,3 +344,5 @@ input_user_random_message:
 	.db "Jumlah Pengacakan", 0
 good_luck_prompt:
 	.db "Good Luck!", 0
+finish_prompt:
+	.db "Hooray!", 0,"Tebakan Benar:", 0
