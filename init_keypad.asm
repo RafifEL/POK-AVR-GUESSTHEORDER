@@ -85,11 +85,11 @@ DELAY_01:
 	; DELAY_CONTROL 40 000 cycles
 	; 5ms at 8.0 MHz
 
-	    ldi  temp, 52
+	    ldi  temp2, 52
 	    ldi  temp4, 242
 	L1: dec  temp4
 	    brne L1
-	    dec  temp
+	    dec  temp2
 	    brne L1
 	    nop
 	ret
