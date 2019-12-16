@@ -376,8 +376,8 @@ NEXT_GUESS:
 	rcall GET_SPACE
 	rcall WRITE_TEXT_NO_DELAY	
 	
-	pop r0
-	pop r0
+	pop r8
+	pop r8
 	tst temp1
 	breq JUMP_TO_GUESS_INPUT
 	sei
