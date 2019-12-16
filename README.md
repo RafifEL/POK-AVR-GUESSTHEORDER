@@ -4,6 +4,8 @@ Muhammad Rafif Elfazri — 1806205722
 Nanda Ryaas Absar — 1806141391
 Naufal Hilmi Irfandi — 1806186673
 
+Link Video: http://tiny.cc/VideoPOK
+
 Penggunaan Program:
 1. User memasukan 8 buah angka (0-9) kedalam program. Barisan ini merupakan barisan yang nantinya akan diacak.
 2. Pengacak akan memasukan berapa kali ia akan melakukan pertukaran pada pasangan angka.
